@@ -43,7 +43,7 @@ jobs:
             echo "Stopping and removing existing vite-app container if it exists..."
              CONTAINER_ID=$(docker ps -q --filter "publish=80")
             if [ -n "$CONTAINER_ID" ]; then
-              echo "🛑 Stopping container on port 80..."
+              echo "🛑 Stopping container on port 80"
               docker stop $CONTAINER_ID
               docker rm $CONTAINER_ID
             fi
