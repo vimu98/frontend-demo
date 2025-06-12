@@ -47,6 +47,8 @@ jobs:
               docker stop $CONTAINER_ID
               docker rm $CONTAINER_ID
             fi
+            docker rm -f vite-app || true
+
             echo "🚀 Starting new container..."
             docker build -t vite-app .
 
