@@ -17,6 +17,13 @@ jobs:
           npm ci
           npm run build
 
+      - name: List files after build
+        run: |
+          echo "Listing root directory:"
+          ls -la
+          echo "Listing dist directory:"
+          ls -la dist
+
       - name: Copy Files via SCP
         uses: appleboy/scp-action@v0.1.6
         with:
