@@ -41,21 +41,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "Stopping and removing existing vite-app container if it exists..."
-            docker stop vite-app || true
-            docker rm vite-app || true
-
-            echo "Removing old vite-app image if it exists..."
-            docker rmi vite-app || true
-
-            echo "Creating Dockerfile in ~/frontend directory..."
-            cat > ~/frontend/Dockerfile <<EOF
-            FROM nginx:alpine
-            COPY dist /usr/share/nginx/html
-            EXPOSE 80
-            EOF
-
-            echo "Building new vite-app Docker image..."
-            cd ~/frontend
+             CONTAINER_ID=$(docker ps -q --filter "publish=8080")
+            if [ -n "$CONTAINER_ID" ]; then
+              echo "🛑 Stopping container on port 8080..."
+              docker stop $CONTAINER_ID
+              docker rm $CONTAINER_ID
+            fi
+            echo "🚀 Starting new container..."
             docker build -t vite-app .
 
             echo "Running new vite-app container..."
