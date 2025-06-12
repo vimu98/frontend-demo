@@ -23,7 +23,10 @@ jobs:
           host: ${{ secrets.FRONTEND_EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "dist/*"
+          source: |
+            dist/*
+            Dockerfile
+            nginx.conf
           target: "~/frontend"
 
       - name: SSH and Deploy Nginx
@@ -35,6 +38,7 @@ jobs:
           script: |
             docker stop vite-app || true
             docker rm vite-app || true
+            docker ps -q --filter "publish=80" | xargs -r docker stop
             cd ~/frontend
             docker build -t vite-app .
             docker run -d -p 80:80 --name vite-app vite-app
