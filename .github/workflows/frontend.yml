@@ -1,0 +1,41 @@
+name: Deploy Vite Frontend to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install and Build
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Copy Files via SCP
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.FRONTEND_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "frontend/dist/*"
+          target: "~/frontend"
+
+      - name: SSH and Deploy Nginx
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.FRONTEND_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop vite-app || true
+            docker rm vite-app || true
+            cd ~/frontend
+            docker build -t vite-app .
+            docker run -d -p 80:80 --name vite-app vite-app
