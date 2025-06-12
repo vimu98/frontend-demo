@@ -49,6 +49,12 @@ jobs:
             fi
             docker rm -f vite-app || true
 
+            echo "✅ Cloning the latest code..."
+            cd ~
+            rm -rf frontend-demo
+            git clone https://github.com/vimu98/frontend-demo
+            cd frontend-demo
+
             echo "🚀 Starting new container..."
             docker build -t vite-app .
 
