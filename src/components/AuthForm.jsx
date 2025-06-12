@@ -15,7 +15,7 @@ export default function AuthForm({ isSignup }) {
       } else {
         const res = await login(user);
         localStorage.setItem("token", res.data.token);
-        alert("Login successfull raththran...");
+        alert("Login successfull");
         navigate("/employees");
       }
     } catch {
